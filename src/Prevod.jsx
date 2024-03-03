@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Prevod = () => {
   const [amount, setAmount] = useState('');
   const [baseCurrency, setBaseCurrency] = useState('CZK');
   const [targetCurrency, setTargetCurrency] = useState('EUR');
   const [convertedAmount, setConvertedAmount] = useState(0);
-  
-  const conversionRates = {
-    CZK: { EUR: 0.04, USD: 0.05 },
-    EUR: { CZK: 25.0, USD: 1.22 },
-    USD: { CZK: 20.0, EUR: 0.82 },
-  };
+
+  useEffect(() => {
+    const fetchExchangeRates = async () => {
+      try {
+        const response = await fetch(
+          `https://open.er-api.com/v6/latest/${baseCurrency}`
+        );
+        const data = await response.json();
+        setRates(data.rates);
+      } catch (error) {
+        console.error('Error fetching exchange rates:', error);
+      }
+    };
+
+    fetchExchangeRates();
+  }, [baseCurrency]);
+
+  const [rates, setRates] = useState({});
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
@@ -27,7 +39,7 @@ const Prevod = () => {
   const convertCurrency = () => {
     const inputAmount = parseFloat(amount);
     if (!isNaN(inputAmount)) {
-      const rate = conversionRates[baseCurrency][targetCurrency];
+      const rate = rates[targetCurrency];
       const converted = inputAmount * rate;
       setConvertedAmount(converted.toFixed(2));
     } else {
@@ -52,7 +64,6 @@ const Prevod = () => {
               <option value="CZK">CZK</option>
               <option value="EUR">EUR</option>
               <option value="USD">USD</option>
-              {/* Add more currencies as needed */}
             </select>
           </label>
         </div>
@@ -63,7 +74,6 @@ const Prevod = () => {
               <option value="CZK">CZK</option>
               <option value="EUR">EUR</option>
               <option value="USD">USD</option>
-              {/* Add more currencies as needed */}
             </select>
           </label>
         </div>

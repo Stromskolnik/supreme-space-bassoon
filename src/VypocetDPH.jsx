@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const VypocetDPH = () => {
   const [priceWithoutVAT, setPriceWithoutVAT] = useState('');
-  const [vatRate, setVatRate] = useState(21); // Default VAT rate is 21%
+  const [vatRate, setVatRate] = useState(21);
   const [totalPriceWithVAT, setTotalPriceWithVAT] = useState(0);
 
   const handlePriceChange = (event) => {
